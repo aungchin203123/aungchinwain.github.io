@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aung Chin Wain | Mechanical Engineering · Robotics · Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --bg2: #111318;
+    --bg3: #181c23;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --muted: #7a8090;
+    --accent: #c8f542;
+    --accent2: #5be4c0;
+    --accent3: #f5a623;
+    --red: #ff4f4f;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 3rem;
+    background: rgba(10,12,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  #home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+  }
+
+  .hero-tag {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1.hero-name {
+    font-family: var(--font-head);
+    font-size: clamp(3.2rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1.8rem;
+  }
+
+  h1.hero-name span { color: var(--accent); }
+
+  .hero-bio {
+    max-width: 580px;
+    font-size: 1.08rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-bio strong { color: var(--text); font-weight: 400; }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 1.6rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0c0f;
+    font-weight: 500;
+    border: none;
+  }
+
+  .btn-primary:hover { background: #d6ff55; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .stat-item {}
+  .stat-num {
+    font-family: var(--font-head);
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    margin-top: 0.3rem;
+  }
+
+  /* GRID BG DECORATION */
+  .hero-grid {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 45%;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to left, rgba(0,0,0,0.3), transparent);
+    pointer-events: none;
+  }
+
+  /* SECTIONS COMMON */
+  section {
+    padding: 6rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h2.section-title {
+    font-family: var(--font-head);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 3.5rem;
+    max-width: 540px;
+  }
+
+  /* ABOUT */
+  #about {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    margin-top: 3rem;
+  }
+
+  .about-text p {
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    font-size: 0.98rem;
+  }
+
+  .about-text p strong { color: var(--text); font-weight: 400; }
+
+  .about-cards { display: flex; flex-direction: column; gap: 1rem; }
+
+  .info-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .info-icon {
+    font-size: 1.1rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+  }
+
+  .info-card-title {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .info-card-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.2rem;
+    margin-top: 3rem;
+  }
+
+  .skill-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.6rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .skill-card:hover {
+    border-color: var(--border2);
+    background: var(--bg3);
+  }
+
+  .skill-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .skill-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .skill-card-title {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.73rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 3px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+  }
+
+  .tag-accent { border-color: rgba(200,245,66,0.3); color: var(--accent); }
+
+  /* RESEARCH */
+  #research { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+  .research-list { margin-top: 3rem; display: flex; flex-direction: column; gap: 1.2rem; }
+
+  .research-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.6rem 1.8rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.2rem;
+    align-items: start;
+    transition: border-color 0.2s;
+  }
+
+  .research-card:hover { border-color: var(--border2); }
+
+  .research-type {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 3px;
+    white-space: nowrap;
+    margin-top: 0.2rem;
+  }
+
+  .type-conf { background: rgba(91,228,192,0.1); color: var(--accent2); border: 1px solid rgba(91,228,192,0.25); }
+  .type-journal { background: rgba(200,245,66,0.1); color: var(--accent); border: 1px solid rgba(200,245,66,0.25); }
+  .type-progress { background: rgba(245,166,35,0.1); color: var(--accent3); border: 1px solid rgba(245,166,35,0.25); }
+
+  .research-title {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .research-meta {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  .research-year {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.2rem;
+    margin-top: 3rem;
+  }
+
+  .project-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.8rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .project-number {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .project-title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  .project-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    line-height: 1.65;
+  }
+
+  /* ACHIEVEMENTS */
+  #achievements {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+    margin-top: 3rem;
+  }
+
+  .ach-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.6rem;
+  }
+
+  .ach-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .ach-scope {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .ach-title {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .ach-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* CONTACT */
+  .contact-inner {
+    max-width: 700px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.4rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,245,66,0.05);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  footer p {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  footer span { color: var(--accent); }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    #home { padding: 6rem 1.5rem 3rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-grid { display: none; }
+    footer { padding: 1.5rem; }
+    .research-card { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo">ACW</a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#research">research</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#achievements">achievements</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-tag">Mechanical Engineering · Robotics · Research</div>
+  <h1 class="hero-name">Aung<br><span>Chin Wain</span></h1>
+  <p class="hero-bio">
+    B.Sc. Mechanical Engineering graduate from <strong>DUET, Gazipur</strong>.
+    Specialized in <strong>Mechanical CAD Design</strong>, <strong>Robotics</strong>, and <strong>Applied Research</strong>.
+    Pursuing a research-focused <strong>Master's in the USA</strong> in Mechanical Engineering or Robotics/Mechatronics.
+  </p>
+  <div class="hero-cta">
+    <a href="#research" class="btn btn-primary">View Research →</a>
+    <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">2<span>×</span></div>
+      <div class="stat-label">Conference Papers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2<span>×</span></div>
+      <div class="stat-label">International Awards</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5<span>×</span></div>
+      <div class="stat-label">National Awards</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2<span>×</span></div>
+      <div class="stat-label">SOLIDWORKS Certs</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">Profile</div>
+  <h2 class="section-title">About Me</h2>
+  <div class="about-grid">
+    <div class="about-text fade-up">
+      <p>
+        I am a <strong>Mechanical Engineering graduate</strong> from Dhaka University of Engineering and Technology (DUET), Gazipur, with a strong focus on <strong>Mechanical CAD Design, Robotics,</strong> and <strong>Applied Research</strong>.
+      </p>
+      <p>
+        My profile demonstrates consistent academic and technical growth through <strong>peer-reviewed research</strong>, international and national achievements, and industry-recognized <strong>SOLIDWORKS certifications</strong>.
+      </p>
+      <p>
+        Long-term goal: pursue a research-oriented <strong>Master's degree</strong> in the USA in Mechanical Engineering, Robotics, or Mechatronics — contributing to robotics, automation, and advanced mechanical system design, followed by a career in R&D or doctoral research.
+      </p>
+    </div>
+    <div class="about-cards fade-up">
+      <div class="info-card">
+        <div class="info-icon">🎓</div>
+        <div>
+          <div class="info-card-title">DUET, Gazipur</div>
+          <div class="info-card-sub">B.Sc. Mechanical Engineering</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🏅</div>
+        <div>
+          <div class="info-card-title">CSWP — Certified SOLIDWORKS Professional</div>
+          <div class="info-card-sub">Advanced part modeling, assemblies, drawings</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🏅</div>
+        <div>
+          <div class="info-card-title">CSWA — Certified SOLIDWORKS Associate</div>
+          <div class="info-card-sub">Industry-recognized CAD certification</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🎯</div>
+        <div>
+          <div class="info-card-title">Target: MS in USA</div>
+          <div class="info-card-sub">Mechanical Engg · Robotics · Mechatronics</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Technical Expertise</div>
+  <h2 class="section-title">What I Work With</h2>
+  <p class="section-sub">Core technical skills developed through coursework, research, and certifications.</p>
+  <div class="skills-grid">
+    <div class="skill-card fade-up">
+      <div class="skill-card-head">
+        <div class="skill-dot" style="background: var(--accent);"></div>
+        <div class="skill-card-title">Mechanical CAD Design</div>
+      </div>
+      <div class="skill-tags">
+        <span class="tag tag-accent">SOLIDWORKS (Advanced)</span>
+        <span class="tag">Parametric Modeling</span>
+        <span class="tag">Assembly Design</span>
+        <span class="tag">GD&T</span>
+        <span class="tag">Technical Drawings</span>
+      </div>
+    </div>
+    <div class="skill-card fade-up">
+      <div class="skill-card-head">
+        <div class="skill-dot" style="background: var(--accent2);"></div>
+        <div class="skill-card-title">Design & Manufacturing</div>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">Sheet Metal</span>
+        <span class="tag">Weldments</span>
+        <span class="tag">Manufacturing Drawings</span>
+        <span class="tag">Design for Manufacturing</span>
+      </div>
+    </div>
+    <div class="skill-card fade-up">
+      <div class="skill-card-head">
+        <div class="skill-dot" style="background: var(--accent3);"></div>
+        <div class="skill-card-title">Simulation & Analysis</div>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">Motion Study</span>
+        <span class="tag">Basic FEA</span>
+        <span class="tag">Structural Analysis</span>
+        <span class="tag">Design Optimization</span>
+      </div>
+    </div>
+    <div class="skill-card fade-up">
+      <div class="skill-card-head">
+        <div class="skill-dot" style="background: #c084fc;"></div>
+        <div class="skill-card-title">Robotics & Mechatronics</div>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">Mechanical System Design</span>
+        <span class="tag">Integration Concepts</span>
+        <span class="tag">Kinematic Design</span>
+      </div>
+    </div>
+    <div class="skill-card fade-up">
+      <div class="skill-card-head">
+        <div class="skill-dot" style="background: var(--red);"></div>
+        <div class="skill-card-title">Research Skills</div>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">Literature Review</span>
+        <span class="tag">Experimentation</span>
+        <span class="tag">Academic Writing</span>
+        <span class="tag">Conference Papers</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-label">Publications</div>
+  <h2 class="section-title">Research & Publications</h2>
+  <p class="section-sub">Peer-reviewed contributions to mechanical engineering and robotics research.</p>
+  <div class="research-list">
+    <div class="research-card fade-up">
+      <div><span class="research-type type-conf">Conference</span></div>
+      <div>
+        <div class="research-title">International Conference Paper #1</div>
+        <div class="research-meta">Topics: Mechanical Design / Robotics / Applied Engineering Research</div>
+      </div>
+      <div class="research-year">Published</div>
+    </div>
+    <div class="research-card fade-up">
+      <div><span class="research-type type-conf">Conference</span></div>
+      <div>
+        <div class="research-title">International Conference Paper #2</div>
+        <div class="research-meta">Topics: Mechanical Design / Robotics / Applied Engineering Research</div>
+      </div>
+      <div class="research-year">Published</div>
+    </div>
+    <div class="research-card fade-up">
+      <div><span class="research-type type-progress">In Progress</span></div>
+      <div>
+        <div class="research-title">Journal Paper — International Peer-Reviewed</div>
+        <div class="research-meta">Targeting high-impact international engineering journal</div>
+      </div>
+      <div class="research-year">2025–26</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">Portfolio</div>
+  <h2 class="section-title">Projects</h2>
+  <p class="section-sub">CAD models, mechanical systems, and research-oriented designs.</p>
+  <div class="projects-grid">
+    <div class="project-card fade-up">
+      <div class="project-number">01 / CAD</div>
+      <div class="project-title">Advanced Parametric CAD Models</div>
+      <p class="project-desc">Complex part and assembly models using advanced SOLIDWORKS parametric modeling techniques, including design tables and configurations.</p>
+      <div class="skill-tags"><span class="tag tag-accent">SOLIDWORKS</span><span class="tag">Parametric</span></div>
+    </div>
+    <div class="project-card fade-up">
+      <div class="project-number">02 / Assembly</div>
+      <div class="project-title">Assembly Design with Motion Analysis</div>
+      <p class="project-desc">Multi-part assembly models with full motion study and kinematic simulation to validate mechanical behavior before prototyping.</p>
+      <div class="skill-tags"><span class="tag tag-accent">Motion Study</span><span class="tag">Assembly</span></div>
+    </div>
+    <div class="project-card fade-up">
+      <div class="project-number">03 / Manufacturing</div>
+      <div class="project-title">Manufacturing-Ready Technical Drawings</div>
+      <p class="project-desc">Complete GD&T-annotated manufacturing drawings following ASME/ISO standards, ready for production or machining.</p>
+      <div class="skill-tags"><span class="tag tag-accent">GD&T</span><span class="tag">Technical Drawing</span></div>
+    </div>
+    <div class="project-card fade-up">
+      <div class="project-number">04 / Research</div>
+      <div class="project-title">Research-Oriented Mechanical System Designs</div>
+      <p class="project-desc">Design and analysis of mechanical systems developed in direct support of published conference and journal research work.</p>
+      <div class="skill-tags"><span class="tag tag-accent">FEA</span><span class="tag">Research</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="section-label">Recognition</div>
+  <h2 class="section-title">Achievements & Awards</h2>
+  <p class="section-sub">International and national-level recognition for engineering excellence.</p>
+  <div class="ach-grid">
+    <div class="ach-card fade-up">
+      <span class="ach-icon">🌍</span>
+      <div class="ach-scope">International</div>
+      <div class="ach-title">International Achievement #1</div>
+      <p class="ach-desc">Recognized for excellence at an international level in engineering, robotics, or technical competition.</p>
+    </div>
+    <div class="ach-card fade-up">
+      <span class="ach-icon">🌍</span>
+      <div class="ach-scope">International</div>
+      <div class="ach-title">International Achievement #2</div>
+      <p class="ach-desc">Second international-level recognition for contributions to engineering or robotics.</p>
+    </div>
+    <div class="ach-card fade-up">
+      <span class="ach-icon">🇧🇩</span>
+      <div class="ach-scope">National — Bangladesh</div>
+      <div class="ach-title">5× National-Level Awards</div>
+      <p class="ach-desc">Five national recognitions for innovation, performance, and engineering excellence across competitions and events.</p>
+    </div>
+    <div class="ach-card fade-up">
+      <span class="ach-icon">🏅</span>
+      <div class="ach-scope">Certification</div>
+      <div class="ach-title">CSWP + CSWA</div>
+      <p class="ach-desc">Dual SOLIDWORKS certifications validating advanced competency in CAD modeling, assemblies, and professional workflows.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-label">Get in Touch</div>
+    <h2 class="section-title">Let's Connect</h2>
+    <p class="section-sub">
+      Open to research collaborations, graduate school conversations, scholarship opportunities, and internships in mechanical engineering or robotics.
+    </p>
+    <div class="contact-links fade-up">
+      <a href="https://github.com/Aungchinwain" class="contact-link" target="_blank">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        github.com/Aungchinwain
+      </a>
+      <a href="mailto:your@email.com" class="contact-link">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Email Me
+      </a>
+      <a href="https://aungchinwain.github.io/" class="contact-link" target="_blank">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
+        Portfolio Site
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Aung Chin Wain © 2025</p>
+  <p>B.Sc. Mechanical Engineering · <span>DUET, Gazipur</span></p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
